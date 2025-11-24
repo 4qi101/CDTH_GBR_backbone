@@ -60,7 +60,6 @@ def calc_cosine_dist(query, retrieval):
     dis = torch.as_tensor(dis)
     return dis
 
-# TODO (n,d)×(m,d) -> (n,m)
 def calc_cosine_dist2(query, retrieval):
     # q = B2.shape[1]
     # if len(B1.shape) < 2:

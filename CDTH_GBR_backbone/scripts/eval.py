@@ -2,17 +2,17 @@ import torch
 from utils.metric import calc_map_k
 
 
-def eval_retrieval_target(imgNet, txtNet, test_dl, retrival_dl, db_name=None, device=None):
+def eval_retrieval_target(imgNet, txtNet, test_dl, retrieval_dl, db_name=None, device=None):
     """
     评估跨模态检索性能
-    
+
     Args:
         imgNet: 图像编码网络
         txtNet: 文本编码网络
         test_dl: 测试集DataLoader
-        retrival_dl: 检索集DataLoader
+        retrieval_dl: 检索集DataLoader
         db_name: 数据集名称（可选）
-    
+
     Returns:
         mapi2t: 图像到文本的MAP值
         mapt2i: 文本到图像的MAP值
@@ -24,17 +24,17 @@ def eval_retrieval_target(imgNet, txtNet, test_dl, retrival_dl, db_name=None, de
 
     test_dl_dict = {'img_code': [], 'txt_code': [], 'label': []}
     retrieval_dl_dict = {'img_code': [], 'txt_code': [], 'label': []}
-    
+
     imgNet.eval()
     txtNet.eval()
-    
+
     with torch.no_grad():
         # 处理测试集
         for i, (im_t, txt_t, label_t, id_target) in enumerate(test_dl):
             im_t = im_t.to(device)
             txt_t = txt_t.to(device)
             label_t = label_t.to(device)
-            
+
             _, _, _, Im_code = imgNet(im_t)
             _, _, _, Txt_code = txtNet(txt_t)
 
@@ -46,11 +46,11 @@ def eval_retrieval_target(imgNet, txtNet, test_dl, retrival_dl, db_name=None, de
             test_dl_dict['label'].append(label_t)
 
         # 处理检索集
-        for i, (im_t, txt_t, label_t, id_target) in enumerate(retrival_dl):
+        for i, (im_t, txt_t, label_t, id_target) in enumerate(retrieval_dl):
             im_t_db = im_t.to(device)
             txt_t_db = txt_t.to(device)
             label_t_db = label_t.to(device)
-            
+
             _, _, _, Im_code = imgNet(im_t_db)
             _, _, _, Txt_code = txtNet(txt_t_db)
 
@@ -76,7 +76,7 @@ def eval_retrieval_target(imgNet, txtNet, test_dl, retrival_dl, db_name=None, de
 
     imgNet.train()
     txtNet.train()
-    
+
     return mapi2t.item(), mapt2i.item()
 
 
